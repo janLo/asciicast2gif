@@ -11,29 +11,24 @@ COPY src /app/src
 COPY externs /app/externs
 RUN lein cljsbuild once main && lein cljsbuild once page
 
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install -y wget build-essential automake
-RUN wget https://github.com/kornelski/giflossy/archive/1.91.tar.gz
-RUN tar xzf 1.91.tar.gz
-RUN cd giflossy-1.91 && autoreconf -i && ./configure --disable-gifview && make && make install
+RUN wget https://github.com/kohler/gifsicle/archive/refs/tags/v1.92.tar.gz
+RUN tar xzf 1.92.tar.gz
+RUN cd giflossy-1.92 && autoreconf -i && ./configure --disable-gifview && make && make install
 
-FROM ubuntu:16.04
+FROM node:14-buster
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG NODE_VERSION=node_6.x
-ARG DISTRO=xenial
 
 RUN apt-get update && \
     apt-get install -y wget apt-transport-https && \
-    echo "deb https://deb.nodesource.com/$NODE_VERSION $DISTRO main" >/etc/apt/sources.list.d/nodesource.list && \
-    wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
-    apt-get update && \
     apt-get install -y \
       bzip2 \
-      imagemagick \
+      imagemagick \      
+      fonts-hack-ttf \
       libfontconfig1 \
-      nodejs \
       ttf-bitstream-vera && \
     rm -rf /var/lib/apt/lists/*
 
