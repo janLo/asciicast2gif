@@ -1,4 +1,4 @@
-FROM clojure:alpine
+FROM clojure:alpine AS cljs
 
 RUN mkdir /app
 WORKDIR /app
@@ -11,12 +11,12 @@ COPY src /app/src
 COPY externs /app/externs
 RUN lein cljsbuild once main && lein cljsbuild once page
 
-FROM ubuntu:20.04
+FROM ubuntu:20.04 as gifsicle
 
 RUN apt-get update && apt-get install -y wget build-essential automake
 RUN wget https://github.com/kohler/gifsicle/archive/refs/tags/v1.92.tar.gz
 RUN tar xzf v1.92.tar.gz
-RUN cd giflossy-1.92 && autoreconf -i && ./configure --disable-gifview && make && make install
+RUN cd gifsicle-1.92 && autoreconf -i && ./configure --disable-gifview && make && make install
 
 FROM node:14-buster
 
@@ -48,9 +48,9 @@ RUN npm install
 COPY asciicast2gif /app/
 COPY renderer.js /app/
 COPY page /app/page
-COPY --from=0 /app/main.js /app/
-COPY --from=0 /app/page/page.js /app/page/
-COPY --from=1 /usr/local/bin/gifsicle /usr/local/bin/
+COPY --from=cljs /app/main.js /app/
+COPY --from=cljs /app/page/page.js /app/page/
+COPY --from=gifsicle /usr/local/bin/gifsicle /usr/local/bin/
 
 WORKDIR /data
 VOLUME ["/data"]
