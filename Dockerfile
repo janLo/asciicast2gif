@@ -18,9 +18,10 @@ RUN wget https://github.com/kohler/gifsicle/archive/refs/tags/v1.92.tar.gz
 RUN tar xzf v1.92.tar.gz
 RUN cd gifsicle-1.92 && autoreconf -i && ./configure --disable-gifview && make && make install
 
-FROM node:12-buster
+FROM node:14-buster
 
 ARG DEBIAN_FRONTEND=noninteractive
+ENV OPENSSL_CONF=/etc/ssl/
 
 RUN apt-get update && \
     apt-get install -y wget apt-transport-https && \
