@@ -11,7 +11,7 @@ COPY src /app/src
 COPY externs /app/externs
 RUN lein cljsbuild once main && lein cljsbuild once page
 
-FROM ubuntu:20.04 as gifsicle
+FROM debian:buster as gifsicle
 
 RUN apt-get update && apt-get install -y wget build-essential automake
 RUN wget https://github.com/kohler/gifsicle/archive/refs/tags/v1.92.tar.gz
