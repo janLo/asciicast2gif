@@ -40,7 +40,7 @@ RUN wget --quiet -O /opt/phantomjs.tar.bz2 https://bitbucket.org/ariya/phantomjs
     rm /opt/phantomjs.tar.bz2 && \
     ln -sf /opt/phantomjs-$PHANTOMJS_VERSION-linux-x86_64/bin/phantomjs /usr/local/bin
     
-RUN sed -i 's#^\s<policy domain="resource.*>$#<!-- \0 -->#' /etc/ImageMagick-6/policy.xml
+RUN sed -i 's#^\s*<policy domain="resource.*>$#<!-- \0 -->#' /etc/ImageMagick-6/policy.xml
 
 RUN mkdir /app
 WORKDIR /app
